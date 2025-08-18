@@ -148,8 +148,8 @@ abstract class ProductConverter extends ShopwareConverter
         if (!empty($fields)) {
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                DefaultEntities::PRODUCT,
-                $this->oldProductId,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 \implode(',', $fields)
             ));
 
@@ -387,10 +387,12 @@ abstract class ProductConverter extends ShopwareConverter
         $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate']);
 
         if (empty($converted['price'])) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                DefaultEntities::PRODUCT,
-                $this->oldProductId,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 'currency'
             ));
         }
@@ -892,10 +894,14 @@ abstract class ProductConverter extends ShopwareConverter
 
             $newMedia['id'] = $mapping['entityUuid'];
             $this->mappingIds[] = $mapping['id'];
+
+            $connection = $this->migrationContext->getConnection();
+
             if (empty($esdFile['name'])) {
                 $this->loggingService->addLogEntry(new CannotConvertChildEntity(
                     $this->runId,
-                    DefaultEntities::PRODUCT_DOWNLOAD,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::PRODUCT,
                     $this->oldProductId
                 ));
@@ -905,10 +911,11 @@ abstract class ProductConverter extends ShopwareConverter
 
             try {
                 $path = \unserialize($esdFile['path'], ['allowed_classes' => false]);
-            } catch (\Throwable $error) {
+            } catch (\Throwable) {
                 $this->loggingService->addLogEntry(new CannotConvertChildEntity(
                     $this->runId,
-                    DefaultEntities::PRODUCT_DOWNLOAD,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::PRODUCT,
                     $this->oldProductId
                 ));
@@ -927,14 +934,22 @@ abstract class ProductConverter extends ShopwareConverter
                 ]
             );
 
-            $esdFile['name'] = \pathinfo($esdFile['name'], \PATHINFO_FILENAME);
-            $this->convertValue($newMedia, 'title', $esdFile, 'name');
+            $fileName = \pathinfo($esdFile['name'], \PATHINFO_FILENAME);
+            $sourceData = ['name' => $fileName];
+
+            $this->convertValue(
+                $newMedia,
+                'title',
+                $sourceData,
+                'name'
+            );
 
             $albumId = $this->mediaFolderLookup->get(ProductDownloadDefinition::ENTITY_NAME, $this->context);
             if ($albumId === null) {
                 $this->loggingService->addLogEntry(new CannotConvertChildEntity(
                     $this->runId,
-                    DefaultEntities::PRODUCT_DOWNLOAD,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::PRODUCT,
                     $this->oldProductId
                 ));
@@ -966,9 +981,12 @@ abstract class ProductConverter extends ShopwareConverter
         $mediaObjects = [];
         foreach ($media as $mediaData) {
             if (!isset($mediaData['media']['id'])) {
+                $connection = $this->migrationContext->getConnection();
+
                 $this->loggingService->addLogEntry(new CannotConvertChildEntity(
                     $this->runId,
-                    DefaultEntities::PRODUCT_MEDIA,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::PRODUCT,
                     $this->oldProductId
                 ));
@@ -1356,10 +1374,12 @@ abstract class ProductConverter extends ShopwareConverter
             $priceArray = $this->getPrice($price, $converted['tax']['taxRate']);
 
             if (empty($priceArray)) {
+                $connection = $this->migrationContext->getConnection();
+
                 $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                     $this->runId,
-                    DefaultEntities::PRODUCT_PRICE,
-                    $this->oldProductId,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     'currencyId'
                 ));
 
