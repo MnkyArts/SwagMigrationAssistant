@@ -175,6 +175,7 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
+
             $property = $properties[$iterator];
             $firstConverted = $property->getConverted();
             static::assertIsArray($firstConverted);
@@ -192,6 +193,7 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
+
             $property = $properties[$iterator];
             $firstConverted = $property->getConverted();
             static::assertIsArray($firstConverted);
@@ -254,6 +256,7 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
+
             $property = $properties[$iterator];
             $firstConverted = $property->getConverted();
             static::assertIsArray($firstConverted);
@@ -272,6 +275,7 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
+
             $property = $properties[$iterator];
             $firstConverted = $property->getConverted();
             static::assertIsArray($firstConverted);

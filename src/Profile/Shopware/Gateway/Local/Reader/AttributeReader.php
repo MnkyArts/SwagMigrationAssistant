@@ -156,6 +156,7 @@ SQL;
             if (isset($attributeConfiguration[$column->getName()])) {
                 $columnData['configuration'] = $attributeConfiguration[$column->getName()];
             }
+
             $resultSet[] = $columnData;
         }
 
