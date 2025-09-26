@@ -341,7 +341,7 @@ export default class MigrationApiService extends ApiService {
             // @ts-ignore
             this.httpClient
                 // @ts-ignore
-                .get(`${this.getApiBasePath()}/get-grouped-logs-of-run`, {
+                .get(`_action/${this.getApiBasePath()}/get-grouped-logs-of-run`, {
                     ...this.basicConfig,
                     params: {
                         runUuid,
@@ -403,10 +403,14 @@ export default class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders(additionalHeaders);
 
         // @ts-ignore
-        return this.httpClient.post(`_action/${this.getApiBasePath()}/cleanup-migration-data`, {
-            ...this.basicConfig,
-            headers,
-        });
+        return this.httpClient.post(
+            `_action/${this.getApiBasePath()}/cleanup-migration-data`,
+            {},
+            {
+                ...this.basicConfig,
+                headers,
+            },
+        );
     }
 
     async isMediaProcessing(additionalHeaders: AdditionalHeaders = {}): Promise<boolean> {
